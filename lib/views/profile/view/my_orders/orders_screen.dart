@@ -1,4 +1,4 @@
-import 'package:e_commerce/core/custom_app_bar.dart';
+import 'package:e_commerce/core/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../../home/widget/custom_product_list.dart';

@@ -17,7 +17,17 @@ class RegisterErrorState extends AuthState {
   RegisterErrorState({required this.message});
 }
 class RegisterSuccessState extends AuthState {}
-class RegisterLoadingState extends AuthState {
+class RegisterLoadingState extends AuthState {}
 
-}
+class GoogleSignInLoadingState extends AuthState {}
+class GoogleSignInSuccessState extends AuthState {}
+class GoogleSignInErrorState extends AuthState {}
+
+class LogOutLoadingState extends AuthState {}
+class LogOutSuccessState extends AuthState {}
+class LogOutErrorState extends AuthState {}
+
+class ResetPasswordErrorState extends AuthState {}
+class ResetPasswordLoadingState extends AuthState {}
+class ResetPasswordSuccessState extends AuthState {}
 

@@ -1,5 +1,5 @@
-import 'package:e_commerce/core/custom_app_bar.dart';
-import 'package:e_commerce/core/custom_text_field.dart';
+import 'package:e_commerce/core/widget/custom_app_bar.dart';
+import 'package:e_commerce/core/widget/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class EditProfileScreen extends StatelessWidget {

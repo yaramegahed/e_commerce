@@ -1,9 +1,9 @@
-import 'package:e_commerce/core/custom_app_bar.dart';
-import 'package:e_commerce/core/custom_text_field.dart';
+import 'package:e_commerce/core/widget/custom_app_bar.dart';
+import 'package:e_commerce/core/widget/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 
-import '../../../core/cashed_image.dart';
+import '../../../core/widget/cashed_image.dart';
 import '../widget/comments_list.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
