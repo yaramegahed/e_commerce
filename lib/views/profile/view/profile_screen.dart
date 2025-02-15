@@ -14,10 +14,10 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthCubit(),
+      create: (context) => AuthCubit()..getData(),
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is LoginLoadingState){
+          if (state is LoginLoadingState||state is GetDataLoadingState){
             Center(child: CircularProgressIndicator());
           }
 
@@ -54,26 +54,26 @@ class ProfileScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             SizedBox(
-                              height: 30,
+                              height: 60,
                             ),
                             CircleAvatar(
                               radius: 60,
                               child: Icon(Icons.person),
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 20,
                             ),
                             Text(
-                              "User Name",
+                              cubit.userDataModel?.name??"no User Name",
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              "Email",
+                              cubit.userDataModel?.email??"no Email",
                               style: TextStyle(fontSize: 20),
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 30,
                             ),
                             CustomButtonProfile(
                               text: 'Edit profile',

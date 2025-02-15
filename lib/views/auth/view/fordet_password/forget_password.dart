@@ -30,8 +30,8 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         }
         if (state is ResetPasswordSuccessState) {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(backgroundColor: Colors.green, content: Text("email sent")));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.green, content: Text("email sent")));
         }
       },
       builder: (context, state) {

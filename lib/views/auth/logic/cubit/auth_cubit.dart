@@ -1,6 +1,6 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
+import 'package:e_commerce/views/auth/logic/model/user_data.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,6 +15,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(LoginLoadingState());
     try {
       await client.auth.signInWithPassword(password: password, email: email);
+      await getData();
       emit(LoginSuccessState());
     } on AuthException catch (e) {
       print(e.toString());
@@ -31,6 +32,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(RegisterLoadingState());
     try {
       await client.auth.signUp(password: password, email: email);
+      await addData(email: email, name: name);
+      await getData();
       emit(RegisterSuccessState());
     } on AuthException catch (e) {
       print(e.toString());
@@ -44,21 +47,9 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<AuthResponse> googleSignIn() async {
     emit(GoogleSignInLoadingState());
-
-    /// TODO: update the Web client ID with your own.
-    ///
-    /// Web Client ID that you registered with Google Cloud.
     const webClientId =
         '110137516942-l4ggavjvld3feld69euc7i151dk40tsr.apps.googleusercontent.com';
-
-    /// TODO: update the iOS client ID with your own.
-    ///
-    /// iOS Client ID that you registered with Google Cloud.
     const iosClientId = 'my-ios.apps.googleusercontent.com';
-
-    // Google sign in on Android will work without providing the Android
-    // Client ID registered on Google Cloud.
-
     final GoogleSignIn googleSignIn = GoogleSignIn(
       clientId: iosClientId,
       serverClientId: webClientId,
@@ -81,6 +72,9 @@ class AuthCubit extends Cubit<AuthState> {
       idToken: idToken,
       accessToken: accessToken,
     );
+    await addData(
+        email: googleUser.email, name: googleUser.displayName ?? "null name");
+    await getData();
     emit(GoogleSignInSuccessState());
     return response;
   }
@@ -102,6 +96,41 @@ class AuthCubit extends Cubit<AuthState> {
       emit(ResetPasswordSuccessState());
     } catch (e) {
       emit(ResetPasswordErrorState());
+    }
+  }
+
+  Future<void> addData({required String email, required String name}) async {
+    emit(AddedDataLoadingState());
+    try {
+      await client.from("users").upsert({
+        "user_id": client.auth.currentUser!.id,
+        "name": name,
+        "email": email,
+      });
+      emit(AddedDataSuccessState());
+    } catch (e) {
+      print(e);
+      emit(AddedDataErrorState());
+    }
+  }
+
+  UserDataModel? userDataModel;
+
+  Future<void> getData() async {
+    emit(GetDataLoadingState());
+    try {
+      final data = await client
+          .from("users")
+          .select()
+          .eq("user_id", client.auth.currentUser!.id);
+      userDataModel = UserDataModel(
+          userId: data[0]["user_id"],
+          name: data[0]["name"],
+          email: data[0]["email"]);
+      emit(GetDataSuccessState());
+    } catch (e) {
+      print(e);
+      emit(GetDataErrorState());
     }
   }
 }

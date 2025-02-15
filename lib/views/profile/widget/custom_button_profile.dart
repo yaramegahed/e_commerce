@@ -21,12 +21,12 @@ class CustomButtonProfile extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(icon,color: Colors.white,),
+            Icon(icon,color: Colors.white,size: 28,),
             Text(
               text,
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-            Icon(Icons.arrow_forward_ios_outlined,color: Colors.white,)
+            Icon(Icons.arrow_forward_ios_outlined,color: Colors.white,size: 25,)
           ],
         ),
       ),

@@ -37,9 +37,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is RegisterLoadingState) {
-          Center(child: CircularProgressIndicator());
-        }
+            Center(child: CircularProgressIndicator());
+          }
           if (state is RegisterSuccessState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(backgroundColor: Colors.green, content: Text("successful sign up")));
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -58,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           return Scaffold(
             appBar: AppBar(
               leading: IconButton(
-                icon: Icon(CupertinoIcons.back),
+                icon: Icon(CupertinoIcons.back, size: 30,),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -67,105 +69,86 @@ class _RegisterScreenState extends State<RegisterScreen> {
             body: state is RegisterLoadingState
                 ? Center(child: CircularProgressIndicator())
                 : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: SingleChildScrollView(
-                      child: Form(
-                        key: formKey,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 2),
-                            ),
-                            CustomTextField(
-                              prefixIcon: Icons.person,
-                              label: 'name',
-                              hint: '',
-                              suffixIcon: Icons.cancel,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            CustomTextField(
-                              prefixIcon: Icons.email,
-                              label: 'email',
-                              hint: '',
-                              suffixIcon: Icons.cancel,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            CustomTextField(
-                              obscureText: isPasswordInvisible,
-                              prefixIcon: Icons.password,
-                              label: 'password',
-                              hint: '',
-                              onTap: (){setState(() {
-                                isPasswordInvisible=! isPasswordInvisible;
-                              });},
-                              suffixIcon: isPasswordInvisible
-                                  ? CupertinoIcons.eye_slash
-                                  : Icons.visibility,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            CustomTextField(
-                              obscureText: true,
-                              prefixIcon: Icons.password,
-                              label: 'repeat password',
-                              hint: '',
-                              suffixIcon: CupertinoIcons.eye,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            CustomTextField(
-                              prefixIcon: Icons.date_range,
-                              label: 'Birth day',
-                              hint: '',
-                              suffixIcon: Icons.cancel,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            CustomTextField(
-                              prefixIcon: Icons.phone,
-                              label: 'phone',
-                              hint: '',
-                              suffixIcon: Icons.cancel_sharp,
-                            ),
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            SizedBox(
-                              height: 50,
-                              width: double.infinity,
-                              child: TextButton(
-                                style: const ButtonStyle(
-                                  backgroundColor:
-                                      WidgetStatePropertyAll(Colors.indigo),
-                                ),
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    cubit.register(
-                                        email: emailController.text,
-                                        password: passwordController.text,
-                                        name: nameController.text);
-                                  }
-                                },
-                                child: const Text(
-                                  "sign up",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text("Sign Up", style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),),
                       ),
-                    ),
+                      SizedBox(height: 15,),
+                      CustomTextField(
+                        controller: nameController,
+                        prefixIcon: Icons.person,
+                        label: 'name',
+                        hint: '',
+                        suffixIcon: Icons.cancel,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CustomTextField(
+                        controller: emailController,
+                        prefixIcon: Icons.email,
+                        label: 'email',
+                        hint: '',
+                        suffixIcon: Icons.cancel,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CustomTextField(
+                        controller: passwordController,
+                        obscureText: isPasswordInvisible,
+                        prefixIcon: Icons.password,
+                        label: 'password',
+                        hint: '',
+                        onTap: () {
+                          setState(() {
+                            isPasswordInvisible = !isPasswordInvisible;
+                          });
+                        },
+                        suffixIcon: isPasswordInvisible
+                            ? CupertinoIcons.eye_slash
+                            : Icons.visibility,
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      SizedBox(
+                        height: 50,
+                        width: double.infinity,
+                        child: TextButton(
+                          style: const ButtonStyle(
+                            backgroundColor:
+                            WidgetStatePropertyAll(Colors.indigo),
+                          ),
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              cubit.register(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                  name: nameController.text);
+                            }
+                          },
+                          child: const Text(
+                            "sign up",
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 20),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
+                ),
+              ),
+            ),
           );
         },
       ),
