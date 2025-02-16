@@ -1,4 +1,6 @@
 import 'package:e_commerce/core/home_cubit/home_cubit.dart';
+import 'package:e_commerce/views/home/view/category/category_screen.dart';
+import 'package:e_commerce/views/home/view/search/search_screen.dart';
 import 'package:e_commerce/views/home/widget/custom_search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,35 +9,71 @@ import '../../../core/models/home_model.dart';
 import '../../product_details/view/product_details_screen.dart';
 import '../widget/custom_product_list.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({
+    super.key,
+  });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController searchController = TextEditingController();
+  String? query;
+  String? category;
+
   final List<Category> categories = [
     Category(icon: Icons.sports, text: "Sports"),
     Category(icon: Icons.tv, text: "Electronics"),
     Category(icon: Icons.collections, text: "Collections"),
+    Category(icon: Icons.shopping_cart, text: "cloths"),
     Category(icon: Icons.book, text: "Books"),
     Category(icon: Icons.gamepad, text: "Gaming"),
   ];
 
-  HomeScreen({super.key});
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeCubit()..getProducts(),
+      create: (context) => HomeCubit()..getProducts(query: query),
       child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
           // TODO: implement listener
         },
         builder: (context, state) {
           HomeCubit cubit = BlocProvider.of(context);
-          List<HomeModel> products = cubit.products;
+          List<HomeModel> products = query != null
+              ? cubit.searchProducts
+              : category != null
+                  ? cubit.categoriesProducts
+                  : cubit.products;
           return Scaffold(
             body: SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Column(
                   children: [
-                    CustomSearchField(),
+                    CustomSearchField(
+                      onPressed: () {
+                        if (searchController.text.isNotEmpty) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchScreen(
+                                  query: searchController.text,
+                                ),
+                              ));
+                        }
+                        searchController.clear();
+                      },
+                      controller: searchController,
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -68,22 +106,33 @@ class HomeScreen extends StatelessWidget {
                                 ),
                                 scrollDirection: Axis.horizontal,
                                 itemCount: categories.length,
-                                itemBuilder: (context, index) => Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 35,
-                                      backgroundColor: Colors.blue,
-                                      child: Icon(
-                                        categories[index].icon,
-                                        color: Colors.white,
-                                        size: 35,
+                                itemBuilder: (context, index) =>
+                                    GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => CategoryScreen(
+                                              category: categories[index].text),
+                                        ));
+                                  },
+                                  child: Column(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 35,
+                                        backgroundColor: Colors.blue,
+                                        child: Icon(
+                                          categories[index].icon,
+                                          color: Colors.white,
+                                          size: 35,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      categories[index].text,
-                                      style: TextStyle(fontSize: 16),
-                                    )
-                                  ],
+                                      Text(
+                                        categories[index].text,
+                                        style: TextStyle(fontSize: 16),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -105,10 +154,15 @@ class HomeScreen extends StatelessWidget {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              ProductDetailsScreen(model: products[index],),
+                                              ProductDetailsScreen(
+                                            model: products[index],
+                                          ),
                                         ));
                                   },
                                   child: CustomProductList(
+                                    onPressed: (){
+                                      cubit.addToFav(products[index].productId!);
+                                    },
                                     model: products[index],
                                   ),
                                 );

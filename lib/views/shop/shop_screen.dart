@@ -23,7 +23,7 @@ class ShopScreen extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              const CustomSearchField(),
+               CustomSearchField(onPressed: () {  }, controller: TextEditingController(),),
               const SizedBox(
                 height: 10,
               ),

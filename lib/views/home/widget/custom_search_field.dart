@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomSearchField extends StatelessWidget {
-  const CustomSearchField({super.key});
+  final void Function() onPressed;
+  final TextEditingController controller;
+  const CustomSearchField({super.key, required this.onPressed, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +14,7 @@ class CustomSearchField extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 8.0),
         child: TextField(
+          controller: controller,
           decoration: InputDecoration(
               hintText: "search",
               hintStyle: TextStyle(
@@ -25,7 +28,7 @@ class CustomSearchField extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.blueAccent),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: onPressed,
                     icon: Icon(
                       Icons.search,
                       size: 27,

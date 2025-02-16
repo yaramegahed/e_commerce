@@ -4,6 +4,7 @@ import 'package:e_commerce/core/widget/custom_text_field.dart';
 import 'package:e_commerce/views/auth/logic/cubit/auth_cubit.dart';
 import 'package:e_commerce/views/product_details/logic/cubit/product_details_cubit.dart';
 import 'package:e_commerce/views/product_details/logic/model/comments_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating/flutter_rating.dart';
@@ -127,7 +128,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           starCount: starCount,
                           onRatingChanged: (rating) => setState(() {
                             this.rating = rating;
-                            print(rating);
+                            if (kDebugMode) {
+                              print(rating);
+                            }
                             cubit.patchRate(
                                 productId: widget.model?.productId ?? "no rate",
                                 getData: {
@@ -145,8 +148,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           label: "Type your feedback",
                           hint: "Type your feedback",
                           suffixIcon: Icons.send,
-                          onTap: () {
-                            cubit.addComment(getData: {
+                          onTap: () async{
+                            await context.read<AuthCubit>().getData();
+                            await cubit.addComment(getData: {
                               "comment": commentController.text,
                               "for_user":
                                   cubit.userId,

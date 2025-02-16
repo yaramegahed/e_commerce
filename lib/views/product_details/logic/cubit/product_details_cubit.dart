@@ -118,7 +118,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
         }
         emit(GetCommentSuccessState());
       } else {
-        throw Exception("Invalid response format");
+        throw Exception("Invalid response format"); 
       }
     } catch (e) {
       print("Error fetching comments: $e");
