@@ -35,7 +35,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          ProductDetailsCubit()..getRate(productId: widget.model!.productId!),
+          ProductDetailsCubit()..getRate(productId: widget.model?.productId??""),
       child: BlocConsumer<ProductDetailsCubit, ProductDetailsState>(
         listener: (context, state) {
           if (state is GetRateLoadingState||state is PostCommentLoadingState) {
@@ -124,12 +124,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           color: Colors.amber,
                           borderColor: Colors.grey,
                           allowHalfRating: true,
-                          rating: cubit.userRates.toDouble(),
+                          rating: rating,
+                          // rating: cubit.userRates.toDouble(),
                           starCount: starCount,
                           onRatingChanged: (rating) => setState(() {
                             this.rating = rating;
                             if (kDebugMode) {
-                              print(rating);
+                              print(this.rating);
                             }
                             cubit.patchRate(
                                 productId: widget.model?.productId ?? "no rate",
@@ -157,7 +158,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               "for_product":
                                   widget.model?.productId,
                               "user_name": context.read<AuthCubit>().userDataModel?.name??"no name",
-                              "replay": null
+                              "replay": "abdooo"
                             });
                             commentController.clear();
                           },
@@ -178,7 +179,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        CommentsList(model: widget.model!,commentsModel: widget.commentsModel,),
+                        CommentsList(model: widget.model ,commentsModel: widget.commentsModel,),
                       ],
                     ),
                   )

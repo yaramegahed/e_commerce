@@ -6,10 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommentsList extends StatelessWidget {
+
   const CommentsList({super.key, required this.model, this.commentsModel});
 
   final CommentsModel? commentsModel;
-  final HomeModel model;
+  final HomeModel? model;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class CommentsList extends StatelessWidget {
           if(state is GetCommentLoadingState){
             CircularProgressIndicator();
           }
-          // TODO: implement listener
+
         },
         builder: (context, state) {
           ProductDetailsCubit cubit=BlocProvider.of(context);
@@ -28,7 +29,7 @@ class CommentsList extends StatelessWidget {
             stream: Supabase.instance.client
                 .from("comments")
                 .stream(primaryKey: ["id"])
-                .eq("for_product", model.productId!)
+                .eq("for_product", model?.productId??"")
                 .order("created_at"),
             builder: (context, snapshot) {
               List<Map<String, dynamic>>? data = snapshot.data;

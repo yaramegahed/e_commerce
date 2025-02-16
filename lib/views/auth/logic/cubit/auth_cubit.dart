@@ -123,6 +123,7 @@ class AuthCubit extends Cubit<AuthState> {
           .from("users")
           .select()
           .eq("user_id", client.auth.currentUser!.id);
+      print("data: $data"*88);
       userDataModel = UserDataModel(
           userId: data[0]["user_id"],
           name: data[0]["name"],
