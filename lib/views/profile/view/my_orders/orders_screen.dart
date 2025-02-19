@@ -17,7 +17,7 @@ class OrdersScreen extends StatelessWidget {
             Expanded(
                 child: CustomProductList(
                   wrap: false,
-                  physics: AlwaysScrollableScrollPhysics(),
+                  physics: AlwaysScrollableScrollPhysics(), isFav: true,
                 )),
           ],
         ),

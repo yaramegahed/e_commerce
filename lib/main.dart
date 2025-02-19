@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:e_commerce/core/bloc_observer/bloc_observer.dart';
+import 'package:e_commerce/core/home_cubit/home_cubit.dart';
 import 'package:e_commerce/views/auth/logic/cubit/auth_cubit.dart';
 import 'package:e_commerce/views/auth/view/login/login_screen.dart';
 import 'package:e_commerce/views/layout/view/layout_screen.dart';
@@ -27,8 +28,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AuthCubit(),
+        ),
+        BlocProvider(
+          create: (context) => HomeCubit(),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',

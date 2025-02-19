@@ -22,15 +22,16 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  final TextEditingController commentController=TextEditingController();
+  final TextEditingController commentController = TextEditingController();
   double rating = 3.5;
   int starCount = 5;
-@override
+
+  @override
   void dispose() {
-  commentController.dispose();
-    // TODO: implement dispose
+    commentController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -38,14 +39,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ProductDetailsCubit()..getRate(productId: widget.model!.productId!),
       child: BlocConsumer<ProductDetailsCubit, ProductDetailsState>(
         listener: (context, state) {
-          if (state is GetRateLoadingState||state is PostCommentLoadingState) {
-            CircularProgressIndicator();
-          }
+          // if (state is GetRateLoadingState ||
+          //     state is PostCommentLoadingState) {
+          //   CircularProgressIndicator();
+          // }
           if (state is GetRateSuccessState) {}
-          if (state is PatchRateSuccessState) {
-            Navigator.pushReplacement(
-                context,MaterialPageRoute(builder: (context) => widget,));
-          }
+          // if (state is PatchRateSuccessState) {
+          //   Navigator.pushReplacement(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => widget,
+          //       ));
+          // }
         },
         builder: (context, state) {
           ProductDetailsCubit cubit = BlocProvider.of(context);
@@ -124,7 +129,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           color: Colors.amber,
                           borderColor: Colors.grey,
                           allowHalfRating: true,
-                          rating: cubit.userRates.toDouble(),
+                          rating: rating ,
                           starCount: starCount,
                           onRatingChanged: (rating) => setState(() {
                             this.rating = rating;
@@ -148,15 +153,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           label: "Type your feedback",
                           hint: "Type your feedback",
                           suffixIcon: Icons.send,
-                          onTap: () async{
+                          onTap: () async {
                             await context.read<AuthCubit>().getData();
                             await cubit.addComment(getData: {
                               "comment": commentController.text,
-                              "for_user":
-                                  cubit.userId,
-                              "for_product":
-                                  widget.model?.productId,
-                              "user_name": context.read<AuthCubit>().userDataModel?.name??"no name",
+                              "for_user": cubit.userId,
+                              "for_product": widget.model?.productId,
+                              "user_name": context.read<AuthCubit>()
+                                      .userDataModel
+                                      ?.name ??
+                                  "no name",
                               "replay": null
                             });
                             commentController.clear();
@@ -178,7 +184,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        CommentsList(model: widget.model!,commentsModel: widget.commentsModel,),
+                        CommentsList(
+                          model: widget.model!,
+                        ),
                       ],
                     ),
                   )

@@ -44,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
       create: (context) => HomeCubit()..getProducts(query: query),
       child: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
-          // TODO: implement listener
         },
         builder: (context, state) {
           HomeCubit cubit = BlocProvider.of(context);
@@ -113,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => CategoryScreen(
-                                              category: categories[index].text),
+                                              category: categories[index].text,model: products[index],),
                                         ));
                                   },
                                   child: Column(
@@ -160,8 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ));
                                   },
                                   child: CustomProductList(
+                                    isFav: cubit.checkFav(products[index].productId!),
                                     onPressed: (){
-                                      cubit.addToFav(products[index].productId!);
+                                      bool isFav=cubit.checkFav(products[index].productId!);
+                                      isFav ?cubit.removeFav(products[index].productId!)
+                                      :cubit.addToFav(products[index].productId!);
                                     },
                                     model: products[index],
                                   ),

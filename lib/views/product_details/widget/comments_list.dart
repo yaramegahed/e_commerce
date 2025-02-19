@@ -6,10 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommentsList extends StatelessWidget {
-  const CommentsList({super.key, required this.model, this.commentsModel});
+  CommentsList({super.key, required this.model, this.commentsModel});
 
   final CommentsModel? commentsModel;
   final HomeModel model;
+
+  final List<CommentsModel> comments = [];
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +19,13 @@ class CommentsList extends StatelessWidget {
       create: (context) => ProductDetailsCubit(),
       child: BlocConsumer<ProductDetailsCubit, ProductDetailsState>(
         listener: (context, state) {
-          if(state is GetCommentLoadingState){
+          if (state is GetCommentLoadingState) {
             CircularProgressIndicator();
           }
           // TODO: implement listener
         },
         builder: (context, state) {
-          ProductDetailsCubit cubit=BlocProvider.of(context);
+          ProductDetailsCubit cubit = BlocProvider.of(context);
           return StreamBuilder(
             stream: Supabase.instance.client
                 .from("comments")
@@ -32,7 +34,6 @@ class CommentsList extends StatelessWidget {
                 .order("created_at"),
             builder: (context, snapshot) {
               List<Map<String, dynamic>>? data = snapshot.data;
-              print(snapshot.data);
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -42,41 +43,51 @@ class CommentsList extends StatelessWidget {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              cubit.comments[index].userName ?? "User Name",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
+                    var commentData = data?[index];
+                    print(commentData);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                commentData?["user_name"] ?? "no user",
+                                // cubit.comments[index].userName ?? "User Name",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(commentData?["comment"] ?? "no comment"),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          commentData?["replay"] !=null && commentData!["replay"].toString().isNotEmpty?
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              children: [
+                                Text(
+                                  commentData["user_name"] ?? "no user",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.blueAccent),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+
+                                Text(commentData["replay"] ?? "no replay"),
+                              ],
                             ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(cubit.comments[index].comment ?? "no comment"),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              commentsModel?.userName ?? "User Name",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(commentsModel?.replay ?? "no replay"),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
+                          ):SizedBox.shrink(),
+                        ],
+                      ),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -84,7 +95,7 @@ class CommentsList extends StatelessWidget {
                       height: 5,
                     );
                   },
-                  itemCount:data!.length,
+                  itemCount: data?.length ?? 10,
                 );
               } else if (!snapshot.hasData) {
                 return Center(child: Text("no comments"));

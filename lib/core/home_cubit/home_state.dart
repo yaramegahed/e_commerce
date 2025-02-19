@@ -11,3 +11,7 @@ final class GetDataErrorState extends HomeState {}
 final class AddToFavLoadingState extends HomeState {}
 final class AddToFavSuccessState extends HomeState {}
 final class AddToFavErrorState extends HomeState {}
+
+final class RemoveFavLoadingState extends HomeState {}
+final class RemoveFavSuccessState extends HomeState {}
+final class RemoveFavErrorState extends HomeState {}

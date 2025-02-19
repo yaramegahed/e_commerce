@@ -19,7 +19,7 @@ class CategoryScreen extends StatelessWidget {
         child: ListView(
           children: [
             SizedBox(height: 10,),
-            CustomProductList(category: category,)
+            CustomProductList(category: category, isFav: true,)
           ],
         ),
       ),

@@ -15,7 +15,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   List<RateModel> rates = [];
   List<CommentsModel> comments = [];
   num averageRate = 0;
-  num userRates = 5;
+  num userRates= 3.5;
   String userId = Supabase.instance.client.auth.currentUser!.id;
 
   Future<void> getRate({required String productId}) async {
@@ -72,7 +72,9 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
       }
       emit(PatchRateSuccessState());
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       emit(PatchRateErrorState());
     }
   }
@@ -111,17 +113,21 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
     emit(GetCommentLoadingState());
     try {
       final response = await data.getData("comments");
-      if (response is List) {
+      if (response.data is List) {
         comments.clear();
         for (var comment in response.data) {
-          comments.add(CommentsModel.fromJson(comment));
+          if (comment is Map<String, dynamic>) {
+            comments.add(CommentsModel.fromJson(comment));
+          }
         }
         emit(GetCommentSuccessState());
       } else {
         throw Exception("Invalid response format"); 
       }
     } catch (e) {
-      print("Error fetching comments: $e");
+      if (kDebugMode) {
+        print("Error fetching comments: $e");
+      }
       emit(GetCommentErrorState());
     }
   }

@@ -11,13 +11,13 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      appBar: CustomAppBar(title: "search"),
+      appBar: CustomAppBar(title: "search results "),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: ListView(
           children: [
             SizedBox(height: 10,),
-            CustomProductList(query: query,model: model,)
+            CustomProductList(query: query,model: model, isFav: true,)
           ],
         ),
       ),

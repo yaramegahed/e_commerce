@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce/core/home_cubit/home_cubit.dart';
 import 'package:e_commerce/core/models/home_model.dart';
+import 'package:e_commerce/core/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +12,7 @@ class CustomProductList extends StatelessWidget {
   final String? query;
   final String? category;
   final void Function()? onPressed;
+  final bool isFav;
 
   const CustomProductList(
       {super.key,
@@ -18,19 +20,24 @@ class CustomProductList extends StatelessWidget {
       this.physics,
       this.model,
       this.query,
-      this.category, this.onPressed});
+      this.category,
+      this.onPressed,
+      required this.isFav,});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeCubit()..getProducts( query: query,category: category),
+      create: (context) =>
+          HomeCubit()..getProducts(query: query, category: category),
       child: BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           HomeCubit cubit = BlocProvider.of(context);
-          List<HomeModel> products = cubit.products;
+          List<HomeModel> products = query != null
+              ? cubit.searchProducts
+              : category != null
+                  ? cubit.categoriesProducts
+                  : cubit.products;
           return Container(
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
@@ -94,7 +101,12 @@ class CustomProductList extends StatelessWidget {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20)),
                       Spacer(),
-                      IconButton(onPressed: onPressed, icon: Icon(Icons.favorite))
+                      IconButton(
+                          onPressed: onPressed,
+                          icon: Icon(
+                            Icons.favorite,
+                            color: isFav ? Colors.red : Colors.grey,
+                          ))
                     ],
                   ),
                 ),
@@ -122,18 +134,7 @@ class CustomProductList extends StatelessWidget {
                       Spacer(),
                       InkWell(
                         onTap: () {},
-                        child: Container(
-                          height: 40,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.blue),
-                          child: Center(
-                              child: Text(
-                            "Buy now",
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          )),
-                        ),
+                        child: CustomButton(),
                       )
                     ],
                   ),

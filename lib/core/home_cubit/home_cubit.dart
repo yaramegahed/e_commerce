@@ -12,7 +12,7 @@ class HomeCubit extends Cubit<HomeState> {
   List<HomeModel> products = [];
   List<HomeModel> searchProducts = [];
   List<HomeModel> categoriesProducts = [];
-  final String userId=Supabase.instance.client.auth.currentUser!.id;
+  final String userId = Supabase.instance.client.auth.currentUser!.id;
 
   Future<void> getProducts({String? query, String? category}) async {
     emit(GetDataLoadingState());
@@ -25,6 +25,7 @@ class HomeCubit extends Cubit<HomeState> {
       if (kDebugMode) {
         print(response);
       }
+      getFav();
       search(query);
       searchByCategory(category);
       emit(GetDataSuccessState());
@@ -39,7 +40,8 @@ class HomeCubit extends Cubit<HomeState> {
   void search(String? query) {
     if (query != null) {
       for (var product in products) {
-        if (product.productName!.toLowerCase().contains(query.toLowerCase())) {
+        if (product.productName != null &&
+            product.productName!.toLowerCase().contains(query.toLowerCase())) {
           searchProducts.add(product);
         }
       }
@@ -57,20 +59,56 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  Map<String, bool> favProducts = {};
+
   Future<void> addToFav(String productId) async {
     emit(AddToFavLoadingState());
     try {
       await data.postData("favorite_products", {
-        "is_fav":"true",
-        "for_user":userId,
-        "for_products":productId,
+        "is_fav": true,
+        "for_user": userId,
+        "for_product": productId,
       });
+      favProducts.addAll({productId: true});
       emit(AddToFavSuccessState());
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
       emit(AddToFavErrorState());
+    }
+  }
+
+  bool checkFav(String productId) {
+    return favProducts.containsKey(productId);
+  }
+
+  Future<void> removeFav(String productId) async {
+    emit(RemoveFavLoadingState());
+    try {
+      await data.deleteData(
+          "favorite_products?for_user=eq.$userId&for_product=eq.$productId");
+      favProducts.removeWhere((key, value) => key == productId);
+      emit(RemoveFavSuccessState());
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      emit(RemoveFavErrorState());
+    }
+  }
+  List<HomeModel>favList=[];
+   void getFav(){
+    for(HomeModel product in products) {
+      if (product.favoriteProducts.isNotEmpty) {
+        for(FavoriteProduct fav in product.favoriteProducts){
+          if(fav.forUser==userId){
+            favList.add(product);
+            favProducts.addAll({product.productId!:true});
+            print(favList.length);
+          }
+        }
+      }
     }
   }
 }
