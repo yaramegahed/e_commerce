@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:e_commerce/features/auth/view/login/login_screen.dart';
 import 'package:e_commerce/features/layout/view/layout_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,7 +33,9 @@ class SplashScreenState extends State<SplashScreen> {
         final userModel = context.read<AuthCubit>().userDataModel;
 
         if (userModel == null) {
-          print("⚠️ User data is null, navigating to LoginScreen.");
+          if (kDebugMode) {
+            print("⚠️ User data is null, navigating to LoginScreen.");
+          }
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => LoginScreen()),
