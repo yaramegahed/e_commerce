@@ -1,5 +1,7 @@
+
 class HomeModel {
   HomeModel({
+    required this.purchase,
     required this.productId,
     required this.createdAt,
     required this.productName,
@@ -22,8 +24,9 @@ class HomeModel {
   final String? category;
   final dynamic images;
   final List<FavoriteProduct> favoriteProducts;
+  final List<Purchase> purchase;
 
-  factory HomeModel.fromJson(Map<String, dynamic> json){
+  factory HomeModel.fromJson(Map<String, dynamic> json) {
     return HomeModel(
       productId: json["product_id"],
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
@@ -34,11 +37,18 @@ class HomeModel {
       description: json["description"],
       category: json["category"],
       images: json["images"],
-      favoriteProducts: json["favorite_products"] == null ? [] : List<FavoriteProduct>.from(json["favorite_products"]!.map((x) => FavoriteProduct.fromJson(x))),
+      favoriteProducts: json["favorite_products"] == null
+          ? []
+          : List<FavoriteProduct>.from(json["favorite_products"]!
+              .map((x) => FavoriteProduct.fromJson(x))),
+      purchase: json["purchase"] == null
+          ? []
+          : List<Purchase>.from(
+              json["purchase"]!.map((e) => Purchase.fromJson(e))),
     );
   }
-
 }
+
 
 class FavoriteProduct {
   FavoriteProduct({
@@ -55,7 +65,7 @@ class FavoriteProduct {
   final DateTime? createdAt;
   final String? forProduct;
 
-  factory FavoriteProduct.fromJson(Map<String, dynamic> json){
+  factory FavoriteProduct.fromJson(Map<String, dynamic> json) {
     return FavoriteProduct(
       id: json["id"],
       isFav: json["is_fav"],
@@ -64,5 +74,30 @@ class FavoriteProduct {
       forProduct: json["for_product"],
     );
   }
+}
 
+class Purchase {
+  Purchase({
+    required this.id,
+    required this.createdAt,
+    required this.isBought,
+    required this.forUser,
+    required this.forProduct,
+  });
+
+  final String? id;
+  final DateTime? createdAt;
+  final bool? isBought;
+  final String? forUser;
+  final String? forProduct;
+
+  factory Purchase.fromJson(Map<String, dynamic> json) {
+    return Purchase(
+      id: json["id"],
+      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
+      isBought: json["is_bought"],
+      forUser: json["for_user"],
+      forProduct: json["for_product"],
+    );
+  }
 }

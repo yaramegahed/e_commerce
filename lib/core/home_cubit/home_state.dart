@@ -15,3 +15,7 @@ final class AddToFavErrorState extends HomeState {}
 final class RemoveFavLoadingState extends HomeState {}
 final class RemoveFavSuccessState extends HomeState {}
 final class RemoveFavErrorState extends HomeState {}
+
+final class BuyLoadingState extends HomeState {}
+final class BuySuccessState extends HomeState {}
+final class BuyErrorState extends HomeState {}

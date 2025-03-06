@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   dio: ^5.7.0
   cached_network_image: ^3.4.1
+  shared_preferences: ^2.3.5
   pay_with_paymob: ^1.4.0
   flutter_rating: ^2.0.2
   google_sign_in: ^6.2.2
@@ -71,6 +72,7 @@ flutter:
      - assets/images/buy.jpeg
      - assets/images/ecom.gif
      - assets/images/OIP.jpeg
+     - assets/images/grocery.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

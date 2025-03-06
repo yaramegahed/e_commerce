@@ -10,15 +10,17 @@ class CustomTextField extends StatelessWidget {
   final bool? obscureText;
   final void Function()? onTap;
 
-  const CustomTextField(
-      {super.key,
-       this.prefixIcon,
-       this.suffixIcon,
-      required this.label,
-      required this.hint,
-      this.obscureText,
-      this.onTap, this.color, this.controller,
-      });
+  const CustomTextField({
+    super.key,
+    this.prefixIcon,
+    this.suffixIcon,
+    required this.label,
+    required this.hint,
+    this.obscureText,
+    this.onTap,
+    this.color,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,24 +40,23 @@ class CustomTextField extends StatelessWidget {
         suffix: InkWell(
             onTap: onTap,
             child: Icon(
-              suffixIcon,size: 25,
+              suffixIcon,
+              size: 25,
               color: color,
             )),
         label: Text(label),
         labelStyle: const TextStyle(color: Colors.grey),
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey),
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(width: 2, )),
-        focusedBorder: border(color: Colors.red, radius: 20),
+        enabledBorder: border(color: Colors.indigo, ),
+        focusedBorder: border(color: Colors.red, ),
       ),
     );
   }
 
-  InputBorder border({required color, required double radius}) {
+  InputBorder border({required color, }) {
     return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(radius),
-        borderSide: BorderSide(color: color));
+        borderRadius: BorderRadius.circular(20),
+        borderSide: BorderSide(color: color,width: 1.5));
   }
 }

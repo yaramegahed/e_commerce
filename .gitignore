@@ -33,6 +33,7 @@ migrate_working_dir/
 .pub/
 /build/
 /lib/core/api_services/sensitive_data.dart
+/lib/features/home/sensitive_pay_data.dart
 
 # Symbolication related
 app.*.symbols

@@ -18,16 +18,14 @@ class HomeCubit extends Cubit<HomeState> {
     emit(GetDataLoadingState());
     try {
       var response = await data
-          .getData("products?select=*,favorite_products(*),purchase()*");
+          .getData("products?select=*,favorite_products(*),purchase(*)");
       for (var product in response.data as List) {
         products.add(HomeModel.fromJson(product));
-      }
-      if (kDebugMode) {
-        print(response);
       }
       getFav();
       search(query);
       searchByCategory(category);
+      getOrders();
       emit(GetDataSuccessState());
     } catch (e) {
       if (kDebugMode) {
@@ -40,8 +38,7 @@ class HomeCubit extends Cubit<HomeState> {
   void search(String? query) {
     if (query != null) {
       for (var product in products) {
-        if (product.productName != null &&
-            product.productName!.toLowerCase().contains(query.toLowerCase())) {
+        if (product.productName!.toLowerCase().contains(query.toLowerCase())) {
           searchProducts.add(product);
         }
       }
@@ -70,6 +67,7 @@ class HomeCubit extends Cubit<HomeState> {
         "for_product": productId,
       });
       favProducts.addAll({productId: true});
+      await getProducts();
       emit(AddToFavSuccessState());
     } catch (e) {
       if (kDebugMode) {
@@ -89,6 +87,9 @@ class HomeCubit extends Cubit<HomeState> {
       await data.deleteData(
           "favorite_products?for_user=eq.$userId&for_product=eq.$productId");
       favProducts.removeWhere((key, value) => key == productId);
+      favList.clear();
+      products.clear();
+      await getProducts();
       emit(RemoveFavSuccessState());
     } catch (e) {
       if (kDebugMode) {
@@ -97,18 +98,61 @@ class HomeCubit extends Cubit<HomeState> {
       emit(RemoveFavErrorState());
     }
   }
-  List<HomeModel>favList=[];
-   void getFav(){
-    for(HomeModel product in products) {
+
+  List<HomeModel> favList = [];
+
+  void getFav() {
+    for (HomeModel product in products) {
       if (product.favoriteProducts.isNotEmpty) {
-        for(FavoriteProduct fav in product.favoriteProducts){
-          if(fav.forUser==userId){
+        for (FavoriteProduct fav in product.favoriteProducts) {
+          if (fav.forUser == userId) {
             favList.add(product);
-            favProducts.addAll({product.productId!:true});
-            print(favList.length);
+            favProducts.addAll({product.productId!: true});
           }
         }
       }
     }
   }
+
+  Future<void> buyProduct({required String productId}) async {
+    emit(BuyLoadingState());
+    try {
+      final response = await data.postData("purchase",
+          {"is_bought": true, "for_user": userId, "for_product": productId});
+
+      if (response.statusCode == 200) {
+        emit(BuySuccessState());
+      } else {
+        emit(BuyErrorState());
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error in buyProduct: $e");
+      }
+      emit(BuyErrorState());
+    }
+  }
+
+  List<HomeModel> ordersList = [];
+
+  void getOrders() {
+    if (kDebugMode) {
+      print("All Products: ${products.length}");
+    }
+
+    for (HomeModel product in products) {
+      if (product.purchase.isNotEmpty) {
+        for (Purchase userOrder in product.purchase) {
+          if (userOrder.forUser == userId) {
+            ordersList.add(product);
+          }
+        }
+      }
+    }
+
+    if (kDebugMode) {
+      print("Final Orders: ${ordersList.length}");
+    }
+  }
+
 }
