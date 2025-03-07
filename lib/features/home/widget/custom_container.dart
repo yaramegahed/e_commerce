@@ -133,10 +133,11 @@ class CustomContainer extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => PaymentView(
                             onPaymentSuccess: () {
+                              onPaymentSuccess();
                               if (kDebugMode) {
                                 print("success");
                               }
-                              onPaymentSuccess;
+
                             },
                             onPaymentError: () {
                               if (kDebugMode) {

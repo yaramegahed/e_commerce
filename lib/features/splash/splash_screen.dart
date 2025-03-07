@@ -23,13 +23,14 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   void handlePush() {
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 5), () async {
       if (CacheHelper.getToken() == null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),
         );
       } else {
+        await context.read<AuthCubit>().getData();
         final userModel = context.read<AuthCubit>().userDataModel;
 
         if (userModel == null) {
@@ -43,7 +44,8 @@ class SplashScreenState extends State<SplashScreen> {
         } else {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LayoutScreen(model: userModel)),
+            MaterialPageRoute(
+                builder: (context) => LayoutScreen(model: userModel)),
           );
         }
       }

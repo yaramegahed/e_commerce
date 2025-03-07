@@ -112,7 +112,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 onPressed: () {},
                                 icon: Icon(
                                   Icons.favorite,
-                                  color: Colors.grey,
+                                  color: Colors.red,
                                 )),
                           ],
                         ),

@@ -64,90 +64,102 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, state) {
           AuthCubit cubit = BlocProvider.of(context);
           return Scaffold(
+              resizeToAvoidBottomInset: true,
               body: Form(
-            key: formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Welcome to our market",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
+                key: formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 80,
+                        ),
+                        SizedBox(
+                            height: 100,
+                            child: Image.asset(
+                                "assets/images/shopping-basket.png")),
+                        SizedBox(height: 10,),
+                        const Text(
+                          "Welcome to our market",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextField(
+                          controller: emailController,
+                          prefixIcon: Icons.email,
+                          label: "email",
+                          hint: "",
+                          suffixIcon: Icons.cancel_sharp,
+                          onTap: emailController.clear,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextField(
+                          controller: passwordController,
+                          obscureText: isPasswordInvisible,
+                          prefixIcon: Icons.password,
+                          onTap: () {
+                            setState(() {
+                              isPasswordInvisible = !isPasswordInvisible;
+                            });
+                          },
+                          label: "password",
+                          hint: "",
+                          suffixIcon: isPasswordInvisible
+                              ? CupertinoIcons.eye_slash
+                              : Icons.visibility,
+                        ),
+                        ForgetPasswordText(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: 50,
+                          width: double.infinity,
+                          child: TextButton(
+                            style: const ButtonStyle(
+                              backgroundColor:
+                                  WidgetStatePropertyAll(Colors.indigo),
+                            ),
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                cubit.login(
+                                    email: emailController.text,
+                                    password: passwordController.text);
+                              }
+                            },
+                            child: const Text(
+                              "Login",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ExpandedRow(),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        GestureDetector(
+                          onTap: cubit.googleSignIn,
+                          child: GoogleContainer(),
+                        ),
+                        SignupRow()
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  CustomTextField(
-                    controller: emailController,
-                    prefixIcon: Icons.email,
-                    label: "email",
-                    hint: "",
-                    suffixIcon: Icons.cancel_sharp,
-                    onTap: emailController.clear,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    controller: passwordController,
-                    obscureText: isPasswordInvisible,
-                    prefixIcon: Icons.password,
-                    onTap: () {
-                      setState(() {
-                        isPasswordInvisible = !isPasswordInvisible;
-                      });
-                    },
-                    label: "password",
-                    hint: "",
-                    suffixIcon: isPasswordInvisible
-                        ? CupertinoIcons.eye_slash
-                        : Icons.visibility,
-                  ),
-                  ForgetPasswordText(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    height: 50,
-                    width: double.infinity,
-                    child: TextButton(
-                      style: const ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Colors.indigo),
-                      ),
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          cubit.login(
-                              email: emailController.text,
-                              password: passwordController.text);
-                        }
-                      },
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  ExpandedRow(),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  GestureDetector(
-                    onTap: cubit.googleSignIn,
-                    child: GoogleContainer(),
-                  ),
-                  SignupRow()
-                ],
-              ),
-            ),
-          ));
+                ),
+              ));
         },
       ),
     );

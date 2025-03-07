@@ -73,6 +73,7 @@ flutter:
      - assets/images/ecom.gif
      - assets/images/OIP.jpeg
      - assets/images/grocery.gif
+     - assets/images/shopping-basket.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

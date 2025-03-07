@@ -1,3 +1,4 @@
+
 import 'package:bloc/bloc.dart';
 import 'package:e_commerce/core/api_services/api_services.dart';
 import 'package:e_commerce/core/models/home_model.dart';
@@ -117,19 +118,18 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> buyProduct({required String productId}) async {
     emit(BuyLoadingState());
     try {
-      final response = await data.postData("purchase",
-          {"is_bought": true, "for_user": userId, "for_product": productId});
-
-      if (response.statusCode == 200) {
-        emit(BuySuccessState());
-      } else {
-        emit(BuyErrorState());
-      }
+      var response=await data.postData("purchase", {
+        "is_bought": true,
+        "for_user": userId,
+        "for_product": productId
+      });
+      print("🔄 Response from server: ${response.data}");
+      emit(BuySuccessState());
     } catch (e) {
       if (kDebugMode) {
-        print("Error in buyProduct: $e");
+        print(e);
+        emit(BuyErrorState());
       }
-      emit(BuyErrorState());
     }
   }
 

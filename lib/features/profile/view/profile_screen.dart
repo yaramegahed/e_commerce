@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/components/show_logout.dart';
 import '../../auth/logic/cubit/auth_cubit.dart';
-import '../../auth/view/login/login_screen.dart';
 import '../widget/custom_button_profile.dart';
 import 'edit_profile/edit_profile_screen.dart';
 import 'my_orders/orders_screen.dart';
@@ -23,11 +23,9 @@ class ProfileScreen extends StatelessWidget {
           }
 
           if (state is LogOutSuccessState) {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LoginScreen(),
-                ));
+            if (kDebugMode) {
+              print("logout success");
+            }
           }
         },
         builder: (context, state) {
@@ -108,7 +106,7 @@ class ProfileScreen extends StatelessWidget {
                               text: 'Log out',
                               icon: Icons.logout,
                               onPressed: () {
-                                showLogout(context);
+                                 showLogout(context);
                               },
                             ),
                             SizedBox(
@@ -128,4 +126,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-

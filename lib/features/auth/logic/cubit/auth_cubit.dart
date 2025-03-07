@@ -104,7 +104,6 @@ class AuthCubit extends Cubit<AuthState> {
     emit(LogOutLoadingState());
     try {
       client.auth.signOut();
-      await CacheHelper.removeToken();
       emit(LogOutSuccessState());
     } catch (e) {
       emit(LogOutErrorState());

@@ -16,7 +16,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   List<RateModel> rates = [];
   List<CommentsModel> comments = [];
   num averageRate = 0;
-  num userRates= 3.5;
+  num userRates = 3.5;
   String userId = Supabase.instance.client.auth.currentUser!.id;
 
   Future<void> getRate({required String productId}) async {
@@ -123,7 +123,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
         }
         emit(GetCommentSuccessState());
       } else {
-        throw Exception("Invalid response format"); 
+        throw Exception("Invalid response format");
       }
     } catch (e) {
       if (kDebugMode) {

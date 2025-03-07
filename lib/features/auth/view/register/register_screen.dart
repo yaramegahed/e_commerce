@@ -88,6 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         label: 'name',
                         hint: '',
                         suffixIcon: Icons.cancel,
+                        onTap: nameController.clear,
                       ),
                       const SizedBox(
                         height: 20,
@@ -98,6 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         label: 'email',
                         hint: '',
                         suffixIcon: Icons.cancel,
+                        onTap: emailController.clear,
                       ),
                       const SizedBox(
                         height: 20,
